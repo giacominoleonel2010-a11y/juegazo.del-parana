@@ -1,164 +1,293 @@
-﻿<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Trivia Contaminacion del Rio Parana</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #e3f2fd;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-    }
-    .game {
-      background: white;
-      padding: 20px;
-      border-radius: 15px;
-      box-shadow: 0px 4px 10px rgba(0,0,0,0.2);
-      max-width: 700px;
-      width: 100%;
-      text-align: center;
-    }
-    button {
-      margin: 5px;
-      padding: 10px 15px;
-      border: none;
-      border-radius: 10px;
-      background: #42a5f5;
-      color: white;
-      cursor: pointer;
-      transition: 0.3s;
-      font-size: 1rem;
-    }
-    button:hover {
-      background: #1e88e5;
-    }
-    button.correct {
-      background: #66bb6a !important;
-    }
-    button.wrong {
-      background: #ef5350 !important;
-    }
-  </style>
-</head>
-<body>
-  <div class="game">
-    <h2 id="question">Pregunta aqui</h2>
-    <div id="answers"></div>
-    <p id="progress"></p>
-    <p id="score"></p>
-    <button onclick="nextQuestion()" id="nextBtn" style="display:none;">Siguiente</button>
-    <button onclick="restartGame()" id="restartBtn" style="display:none;">Volver a jugar</button>
-  </div>
+>@echo off
+title 🌊 Desafío del Río Paraná 🌊
+color 0B
+setlocal EnableDelayedExpansion
 
 
-  <script>
-    const PUNTOS_POR_PREGUNTA = 5;
+set /a puntaje=0
+set /a total=20
 
 
-    const preguntas = [
-      {q: "Cual es una de las principales causas de contaminacion del Rio Parana?", options: ["Residuos industriales", "Peces", "Turismo sostenible", "Lluvia", "Aire limpio", "Vegetacion"], answer: 0},
-      {q: "Que ciudad importante se abastece de agua del Parana?", options: ["Mendoza", "Rosario", "San Juan", "Salta", "Cordoba", "La Plata"], answer: 1},
-      {q: "Que tipo de desecho domestico afecta mas al Parana?", options: ["Hojas secas", "Arena", "Plasticos", "Piedras", "Vidrio", "Tela"], answer: 2},
-      {q: "Cual de estos problemas afecta a la fauna del Parana?", options: ["Altas temperaturas", "Vientos fuertes", "Metales pesados", "Lluvias", "Turismo", "Sedimentacion"], answer: 2},
-      {q: "Que actividad agricola genera contaminacion en el rio?", options: ["Uso de agroquimicos", "Pesca artesanal", "Cultivo de frutas", "Ganaderia sustentable", "Apicultura", "Silvicultura"], answer: 0},
-      {q: "Que peces emblematicos se ven afectados por la contaminacion?", options: ["Dorado y surubi", "Salmon y trucha", "Pirana y bagre africano", "Atun y sardina", "Carpa y tilapia", "Bagre comun"], answer: 0},
-      {q: "Que consecuencia tiene la contaminacion para las personas?", options: ["Mas turismo", "Mas pesca", "Enfermedades", "Mejor agua", "Aire limpio", "Plantas saludables"], answer: 2},
-      {q: "Cual es una solucion para reducir la contaminacion del Parana?", options: ["Talar arboles", "Aumentar basura", "Plantas de tratamiento de efluentes", "Usar mas plasticos", "Verter quimicos", "Construir mas represas"], answer: 2},
-      {q: "Que provincia NO esta banada por el Parana?", options: ["Entre Rios", "Santa Fe", "Cordoba", "Corrientes", "Formosa", "Chaco"], answer: 2},
-      {q: "Que se recomienda para cuidar el rio?", options: ["Tirar basura al agua", "Quemar pastizales", "Reducir plasticos", "Verter quimicos", "Pescar sin control", "Construir muelles"], answer: 2},
-      {q: "Que elemento industrial contamina mas el rio?", options: ["Aceite usado", "Papel", "Arena", "Hojas", "Vidrio", "Madera"], answer: 0},
-      {q: "Que tipo de agricultura afecta al Parana?", options: ["Uso de fertilizantes", "Cultivo biologico", "Jardin urbano", "Orquideas", "Huertos caseros", "Apicultura"], answer: 0},
-      {q: "Cual es un efecto de la contaminacion en el agua?", options: ["Mortandad de peces", "Mayor pesca", "Mas turismo", "Mejor calidad", "Agua clara", "Aumento de oxigeno"], answer: 0},
-      {q: "Que ciudades dependen del Parana para agua potable?", options: ["Rosario y Santa Fe", "Buenos Aires", "Cordoba", "Mendoza", "San Juan", "Salta"], answer: 0},
-      {q: "Que basura es comun en las riberas del rio?", options: ["Plasticos", "Arena", "Hojas", "Piedras", "Vidrio", "Metal"], answer: 0},
-      {q: "Que peces son emblematicos del Parana?", options: ["Dorado y surubi", "Trucha y salmon", "Pirana", "Bagre africano", "Atun", "Sardina"], answer: 0},
-      {q: "Que se debe evitar para cuidar el rio?", options: ["Verter quimicos", "Plantar arboles", "Recoger basura", "Reducir plasticos", "Proteger fauna", "Tratamiento de agua"], answer: 0},
-      {q: "Cual es una medida de proteccion ambiental?", options: ["Plantas de tratamiento", "Talar arboles", "Quemar residuos", "Vertidos quimicos", "Pesca ilegal", "Construir represas"], answer: 0},
-      {q: "Que impacto tiene la contaminacion en la salud?", options: ["Enfermedades gastrointestinales", "Aumento de pesca", "Mejor agua", "Mayor turismo", "Menos mosquitos", "Mas oxigeno"], answer: 0},
-      {q: "Cual es una buena practica para reducir contaminacion?", options: ["Reducir plasticos", "Tirar basura al rio", "Quemar residuos", "Vertidos quimicos", "Pesca sin control", "Construir muelles"], answer: 0}
-    ];
+echo.
+echo ==========================================
+echo   🌊 DESAFÍO DEL RÍO PARANÁ 🌊
+echo ==========================================
+echo.
+echo Demostrá cuánto sabés sobre la contaminación del río más importante de Argentina 🇦🇷
+echo.
+pause
 
 
-    let current = 0;
-    let score = 0;
+cls
 
 
-    function loadQuestion() {
-      const pregunta = preguntas[current];
-      document.getElementById("question").textContent = pregunta.q;
+REM === PREGUNTAS ===
 
 
-      const answersDiv = document.getElementById("answers");
-      answersDiv.innerHTML = "";
+:pregunta1
+echo 1️⃣ ¿Cuál es el principal contaminante de origen agrícola detectado en el Paraná?
+echo A) Arsénico
+echo B) Nitratos y fosfatos
+echo C) Plomo
+echo D) Cianuro
+set /p r=Respuesta: 
+if /I "%r%"=="B" set /a puntaje+=1 & echo ✅ Correcto! & goto pregunta2
+echo ❌ Incorrecto. Era la B) Nitratos y fosfatos
+goto pregunta2
 
 
-      const opciones = pregunta.options
-        .map((opt, index) => ({opt, index}))
-        .sort(() => Math.random() - 0.5);
+:pregunta2
+echo.
+echo 2️⃣ ¿Qué provoca el exceso de nutrientes en el agua?
+echo A) Eutrofización
+echo B) Desertificación
+echo C) Deforestación
+echo D) Lluvia ácida
+set /p r=Respuesta: 
+if /I "%r%"=="A" set /a puntaje+=1 & echo ✅ Correcto! & goto pregunta3
+echo ❌ Incorrecto. Era la A) Eutrofización
+goto pregunta3
 
 
-      opciones.forEach(item => {
-        const btn = document.createElement("button");
-        btn.textContent = item.opt;
-        btn.onclick = () => checkAnswer(item.index, btn);
-        answersDiv.appendChild(btn);
-      });
+:pregunta3
+echo.
+echo 3️⃣ ¿Qué tipo de industria tiene mayor impacto contaminante en el Paraná?
+echo A) Textil
+echo B) Petroquímica
+echo C) Agroindustrial y frigorífica
+echo D) Electrónica
+set /p r=Respuesta: 
+if /I "%r%"=="C" set /a puntaje+=1 & echo ✅ Correcto! & goto pregunta4
+echo ❌ Incorrecto. Era la C) Agroindustrial y frigorífica
+goto pregunta4
 
 
-      document.getElementById("progress").textContent = `Pregunta ${current + 1} de ${preguntas.length}`;
-      document.getElementById("score").textContent = `Puntuacion: ${score}`;
-      document.getElementById("nextBtn").style.display = "none";
-      document.getElementById("restartBtn").style.display = "none";
-    }
+:pregunta4
+echo.
+echo 4️⃣ ¿Qué ciudad concentra altos niveles de contaminación en su tramo del Paraná?
+echo A) Corrientes
+echo B) Rosario
+echo C) Posadas
+echo D) Paraná
+set /p r=Respuesta: 
+if /I "%r%"=="B" set /a puntaje+=1 & echo ✅ Correcto! & goto pregunta5
+echo ❌ Incorrecto. Era la B) Rosario
+goto pregunta5
 
 
-    function checkAnswer(selected, btn) {
-      const correct = preguntas[current].answer;
-      if (selected === correct) {
-        btn.classList.add("correct");
-        score += PUNTOS_POR_PREGUNTA;
-      } else {
-        btn.classList.add("wrong");
-        const botones = document.querySelectorAll("#answers button");
-        botones.forEach(b => {
-          if (b.textContent === preguntas[current].options[correct]) {
-            b.classList.add("correct");
-          }
-        });
-      }
-      document.querySelectorAll("#answers button").forEach(b => b.disabled = true);
-      document.getElementById("score").textContent = `Puntuacion: ${score}`;
-      document.getElementById("nextBtn").style.display = "block";
-    }
+:pregunta5
+echo.
+echo 5️⃣ ¿Qué organismo se usa como bioindicador de contaminación?
+echo A) Dorado
+echo B) Sábalo
+echo C) Surubí
+echo D) Mojarra
+set /p r=Respuesta: 
+if /I "%r%"=="B" set /a puntaje+=1 & echo ✅ Correcto! & goto pregunta6
+echo ❌ Incorrecto. Era la B) Sábalo
+goto pregunta6
 
 
-    function nextQuestion() {
-      current++;
-      if (current < preguntas.length) {
-        loadQuestion();
-      } else {
-        document.querySelector(".game").innerHTML = `
-          <h2>Juego terminado</h2>
-          <p>Tu puntuacion final: ${score} de ${preguntas.length * PUNTOS_POR_PREGUNTA}</p>
-          <button onclick="restartGame()">Volver a jugar</button>
-        `;
-      }
-    }
+:pregunta6
+echo.
+echo 6️⃣ ¿Qué genera la deforestación en la cuenca del Paraná?
+echo A) Aumento del caudal
+echo B) Mayor erosión y arrastre de contaminantes
+echo C) Reducción del oxígeno
+echo D) Sedimentación nula
+set /p r=Respuesta: 
+if /I "%r%"=="B" set /a puntaje+=1 & echo ✅ Correcto! & goto pregunta7
+echo ❌ Incorrecto. Era la B) Mayor erosión y arrastre de contaminantes
+goto pregunta7
 
 
-    function restartGame() {
-      current = 0;
-      score = 0;
-      loadQuestion();
-    }
+:pregunta7
+echo.
+echo 7️⃣ ¿Qué contaminante se ha encontrado en peces del Paraná?
+echo A) Mercurio
+echo B) Cobre
+echo C) Zinc
+echo D) Calcio
+set /p r=Respuesta: 
+if /I "%r%"=="A" set /a puntaje+=1 & echo ✅ Correcto! & goto pregunta8
+echo ❌ Incorrecto. Era la A) Mercurio
+goto pregunta8
 
 
-    loadQuestion();
-  </script>
-</body>
-</html>
+:pregunta8
+echo.
+echo 8️⃣ ¿Qué problema causan los microplásticos?
+echo A) Mejoran la oxigenación
+echo B) Acumulan tóxicos en la cadena alimentaria
+echo C) Reducen bacterias
+echo D) Neutralizan metales pesados
+set /p r=Respuesta: 
+if /I "%r%"=="B" set /a puntaje+=1 & echo ✅ Correcto! & goto pregunta9
+echo ❌ Incorrecto. Era la B) Acumulan tóxicos en la cadena alimentaria
+goto pregunta9
+
+
+:pregunta9
+echo.
+echo 9️⃣ ¿Qué sustancia suele provenir de los frigoríficos?
+echo A) Amoníaco
+echo B) Petróleo
+echo C) Aluminio
+echo D) Arsénico
+set /p r=Respuesta: 
+if /I "%r%"=="A" set /a puntaje+=1 & echo ✅ Correcto! & goto pregunta10
+echo ❌ Incorrecto. Era la A) Amoníaco
+goto pregunta10
+
+
+:pregunta10
+echo.
+echo 🔟 ¿Qué efecto produce el vertido de aguas residuales sin tratamiento?
+echo A) Aumenta el oxígeno
+echo B) Provoca eutrofización y muerte de fauna
+echo C) Genera lluvias
+echo D) Reduce contaminantes
+set /p r=Respuesta: 
+if /I "%r%"=="B" set /a puntaje+=1 & echo ✅ Correcto! & goto pregunta11
+echo ❌ Incorrecto. Era la B) Eutrofización y muerte de fauna
+goto pregunta11
+
+
+:pregunta11
+echo.
+echo 11️⃣ ¿Qué metal pesado es tóxico y puede acumularse en peces?
+echo A) Hierro
+echo B) Plomo
+echo C) Magnesio
+echo D) Sodio
+set /p r=Respuesta: 
+if /I "%r%"=="B" set /a puntaje+=1 & echo ✅ Correcto! & goto pregunta12
+echo ❌ Incorrecto. Era la B) Plomo
+goto pregunta12
+
+
+:pregunta12
+echo.
+echo 12️⃣ ¿Qué gas se reduce cuando hay exceso de materia orgánica?
+echo A) Nitrógeno
+echo B) Oxígeno disuelto
+echo C) Ozono
+echo D) Metano
+set /p r=Respuesta: 
+if /I "%r%"=="B" set /a puntaje+=1 & echo ✅ Correcto! & goto pregunta13
+echo ❌ Incorrecto. Era la B) Oxígeno disuelto
+goto pregunta13
+
+
+:pregunta13
+echo.
+echo 13️⃣ ¿Qué actividad humana genera mayor contaminación en el Paraná?
+echo A) Agricultura intensiva
+echo B) Turismo
+echo C) Pesca artesanal
+echo D) Transporte fluvial
+set /p r=Respuesta: 
+if /I "%r%"=="A" set /a puntaje+=1 & echo ✅ Correcto! & goto pregunta14
+echo ❌ Incorrecto. Era la A) Agricultura intensiva
+goto pregunta14
+
+
+:pregunta14
+echo.
+echo 14️⃣ ¿Qué tipo de contaminación afecta más a los peces?
+echo A) Acústica
+echo B) Química
+echo C) Lumínica
+echo D) Radiactiva
+set /p r=Respuesta: 
+if /I "%r%"=="B" set /a puntaje+=1 & echo ✅ Correcto! & goto pregunta15
+echo ❌ Incorrecto. Era la B) Química
+goto pregunta15
+
+
+:pregunta15
+echo.
+echo 15️⃣ ¿Qué organismos sufren más por los pesticidas?
+echo A) Peces y anfibios
+echo B) Aves
+echo C) Mamíferos
+echo D) Reptiles
+set /p r=Respuesta: 
+if /I "%r%"=="A" set /a puntaje+=1 & echo ✅ Correcto! & goto pregunta16
+echo ❌ Incorrecto. Era la A) Peces y anfibios
+goto pregunta16
+
+
+:pregunta16
+echo.
+echo 16️⃣ ¿Qué acción humana contribuye a la contaminación difusa?
+echo A) Lluvia ácida
+echo B) Uso excesivo de fertilizantes
+echo C) Deforestación natural
+echo D) Emisiones volcánicas
+set /p r=Respuesta: 
+if /I "%r%"=="B" set /a puntaje+=1 & echo ✅ Correcto! & goto pregunta17
+echo ❌ Incorrecto. Era la B) Uso excesivo de fertilizantes
+goto pregunta17
+
+
+:pregunta17
+echo.
+echo 17️⃣ ¿Qué componente del suelo se arrastra con las lluvias al Paraná?
+echo A) Fósforo
+echo B) Silicio
+echo C) Litio
+echo D) Manganeso
+set /p r=Respuesta: 
+if /I "%r%"=="A" set /a puntaje+=1 & echo ✅ Correcto! & goto pregunta18
+echo ❌ Incorrecto. Era la A) Fósforo
+goto pregunta18
+
+
+:pregunta18
+echo.
+echo 18️⃣ ¿Qué contaminante afecta al sistema endocrino de los peces?
+echo A) Hormonas sintéticas y pesticidas
+echo B) Calcio
+echo C) Sodio
+echo D) Hierro
+set /p r=Respuesta: 
+if /I "%r%"=="A" set /a puntaje+=1 & echo ✅ Correcto! & goto pregunta19
+echo ❌ Incorrecto. Era la A) Hormonas sintéticas y pesticidas
+goto pregunta19
+
+
+:pregunta19
+echo.
+echo 19️⃣ ¿Qué hace la deforestación en las orillas del Paraná?
+echo A) Disminuye la erosión
+echo B) Facilita la pérdida de suelo y sedimentos al agua
+echo C) Mejora la filtración
+echo D) Disminuye la contaminación
+set /p r=Respuesta: 
+if /I "%r%"=="B" set /a puntaje+=1 & echo ✅ Correcto! & goto pregunta20
+echo ❌ Incorrecto. Era la B) Facilita la pérdida de suelo
+goto pregunta20
+
+
+:pregunta20
+echo.
+echo 20️⃣ ¿Qué práctica ayuda a reducir la contaminación?
+echo A) Arrojar desechos lejos del cauce
+echo B) Plantar vegetación ribereña
+echo C) Pescar con redes finas
+echo D) Drenar pantanos
+set /p r=Respuesta: 
+if /I "%r%"=="B" set /a puntaje+=1 & echo ✅ Correcto! & goto resultado
+echo ❌ Incorrecto. Era la B) Plantar vegetación ribereña
+goto resultado
+
+
+:resultado
+cls
+echo ==========================================
+echo 🎯 PUNTAJE FINAL: %puntaje% / %total%
+echo ==========================================
+if %puntaje% GEQ 18 echo 🔥 ¡Impresionante! Sos un genio ambiental 💪
+if %puntaje% GEQ 12 if %puntaje% LSS 18 echo 👏 Muy bien, sabés mucho del Paraná 🌱
+if %puntaje% LSS 12 echo 😅 Tenés que estudiar un poco
